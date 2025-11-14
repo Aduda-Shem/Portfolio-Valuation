@@ -1,4 +1,4 @@
-# Portfolio Valuation System
+<img width="1671" height="914" alt="Screenshot 2025-11-14 at 15 46 19" src="https://github.com/user-attachments/assets/005b9889-ca4b-43ae-b6a1-fba8d5de5a51" /># Portfolio Valuation System
 
 Django REST API and Angular frontend application for tracking portfolio values over time.
 
@@ -11,8 +11,8 @@ Django REST API and Angular frontend application for tracking portfolio values o
 - **Status Workflow**: Support for DRAFT → CONFIRMED → ARCHIVED status transitions
 - **RESTful API**: Complete REST API with filtering and querying capabilities
 - **Modern Frontend**: Angular application with Akita state management and DaisyUI
-Screenshot 2025-11-14 at 15.43.56.png
-Screenshot 2025-11-14 at 15.45.17.png
+<img width="1663" height="932" alt="Screenshot 2025-11-14 at 15 43 56" src="https://github.com/user-attachments/assets/a39f977c-0d5f-414f-9a36-d898571bcfe1" />
+<img width="1658" height="926" alt="Screenshot 2025-11-14 at 15 45 17" src="https://github.com/user-attachments/assets/785783d0-71e9-4f05-a457-00c2861240ed" />
 
 ## Tech Stack
 
@@ -31,7 +31,7 @@ Screenshot 2025-11-14 at 15.45.17.png
 ### Infrastructure
 - Docker & Docker Compose
 - PostgreSQL database
-Screenshot 2025-11-14 at 15.46.19.png
+<img width="1671" height="914" alt="Screenshot 2025-11-14 at 15 46 19" src="https://github.com/user-attachments/assets/f6fc2928-95ac-4f37-aa3c-f88837af7bcf" />
 
 ## Setup Instructions
 
