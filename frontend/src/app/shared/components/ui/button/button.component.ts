@@ -9,22 +9,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-button',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <button
-      [type]="type"
-      [class]="getButtonClasses()"
-      [disabled]="disabled"
-      (click)="onClick.emit($event)"
-    >
-      <ng-content></ng-content>
-    </button>
-  `,
-  styles: [`
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  `]
+  templateUrl: './button.component.html',
+  styleUrl: './button.component.scss',
 })
 export class ButtonComponent {
   @Input() variant: 'primary' | 'secondary' | 'danger' | 'ghost' = 'primary';

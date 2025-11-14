@@ -10,24 +10,7 @@ import { ButtonComponent } from '../button/button.component';
   selector: 'app-confirm-dialog',
   standalone: true,
   imports: [CommonModule, ButtonComponent],
-  template: `
-    <div *ngIf="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" (click)="handleCancel()">
-      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" (click)="$event.stopPropagation()">
-        <div class="p-6">
-          <h3 class="text-lg font-bold text-gray-900 mb-2">{{ title }}</h3>
-          <p class="text-gray-600 mb-6">{{ message }}</p>
-          <div class="flex justify-end gap-2">
-            <app-button variant="ghost" (onClick)="handleCancel()">
-              {{ cancelText }}
-            </app-button>
-            <app-button [variant]="variant === 'danger' ? 'danger' : 'primary'" (onClick)="handleConfirm()">
-              {{ confirmText }}
-            </app-button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './confirm-dialog.component.html',
 })
 export class ConfirmDialogComponent {
   @Input() isOpen: boolean = false;

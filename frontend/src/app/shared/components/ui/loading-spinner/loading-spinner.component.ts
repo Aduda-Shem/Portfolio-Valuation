@@ -9,12 +9,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-loading-spinner',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div [class]="getContainerClasses()">
-      <span class="loading loading-spinner loading-lg"></span>
-      <p *ngIf="message" class="mt-4 text-gray-600">{{ message }}</p>
-    </div>
-  `,
+  templateUrl: './loading-spinner.component.html',
 })
 export class LoadingSpinnerComponent {
   @Input() size: 'sm' | 'md' | 'lg' = 'lg';

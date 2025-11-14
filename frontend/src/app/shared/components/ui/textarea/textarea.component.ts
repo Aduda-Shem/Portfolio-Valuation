@@ -10,28 +10,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/f
   selector: 'app-textarea',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="form-control">
-      <label *ngIf="label" class="label">
-        <span class="label-text font-medium text-gray-700">{{ label }}</span>
-        <span *ngIf="required" class="label-text-alt text-red-500">*</span>
-      </label>
-      <textarea
-        [placeholder]="placeholder || ''"
-        [required]="required"
-        [rows]="rows"
-        [value]="value"
-        [disabled]="disabled"
-        (input)="onInput($event)"
-        (blur)="onBlur()"
-        class="textarea textarea-bordered w-full bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#003781] focus:border-[#003781]"
-        [class.textarea-error]="hasError"
-      ></textarea>
-      <label *ngIf="error" class="label">
-        <span class="label-text-alt text-red-500">{{ error }}</span>
-      </label>
-    </div>
-  `,
+  templateUrl: './textarea.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

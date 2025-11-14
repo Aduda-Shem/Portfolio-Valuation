@@ -14,55 +14,7 @@ import { Formatters } from '../../../../core/utils/formatters';
   selector: 'app-holdings-table',
   standalone: true,
   imports: [CommonModule, RouterModule, ButtonComponent, BadgeComponent],
-  template: `
-    <div class="card bg-white shadow-sm border border-gray-200">
-      <div class="overflow-x-auto">
-        <table class="table w-full">
-          <thead class="bg-gray-50">
-            <tr>
-              <th *ngIf="showPortfolio" class="text-left font-semibold text-gray-700">Portfolio</th>
-              <th class="text-left font-semibold text-gray-700">Asset Name</th>
-              <th class="text-left font-semibold text-gray-700">Type</th>
-              <th class="text-left font-semibold text-gray-700">Quantity</th>
-              <th class="text-left font-semibold text-gray-700">Unit Price</th>
-              <th class="text-left font-semibold text-gray-700">Total Value</th>
-              <th class="text-left font-semibold text-gray-700">Date</th>
-              <th class="text-left font-semibold text-gray-700">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let holding of holdings" class="hover:bg-gray-50">
-              <td *ngIf="showPortfolio" class="text-gray-900">
-                <a [routerLink]="['/portfolios', holding.portfolio]" class="hover:text-[#003781] font-semibold">
-                  {{ holding.portfolio_name || 'Portfolio ' + holding.portfolio }}
-                </a>
-              </td>
-              <td class="font-semibold text-gray-900">{{ holding.asset_name }}</td>
-              <td>
-                <app-badge [label]="holding.asset_type" variant="primary"></app-badge>
-              </td>
-              <td class="font-medium text-gray-700">{{ Formatters.formatNumber(holding.quantity) }}</td>
-              <td class="text-gray-700">{{ Formatters.formatCurrency(holding.unit_price) }}</td>
-              <td class="font-bold text-gray-900">{{ Formatters.formatCurrency(holding.total_value) }}</td>
-              <td class="text-sm text-gray-600">{{ Formatters.formatDate(holding.valuation_date) }}</td>
-              <td>
-                <div class="flex gap-2">
-                  <app-button *ngIf="onDelete" variant="danger" size="sm" (onClick)="onDelete.emit(holding.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </app-button>
-                  <app-button *ngIf="showPortfolio" size="sm" [routerLink]="['/portfolios', holding.portfolio]">
-                    View
-                  </app-button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `,
+  templateUrl: './holdings-table.component.html',
 })
 export class HoldingsTableComponent {
   @Input() holdings: Holding[] = [];

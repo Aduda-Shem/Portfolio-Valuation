@@ -1,0 +1,24 @@
+<div class="form-control">
+  <label *ngIf="label" class="label">
+    <span class="label-text font-medium text-gray-700">{{ label }}</span>
+    <span *ngIf="required" class="label-text-alt text-red-500">*</span>
+  </label>
+  <select
+    [value]="value"
+    [required]="required"
+    [disabled]="disabled"
+    (change)="onChange($event)"
+    (blur)="onBlur()"
+    class="select select-bordered w-full bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#003781] focus:border-[#003781]"
+    [class.select-error]="hasError"
+  >
+    <option [value]="''" disabled>{{ placeholder || 'Select an option' }}</option>
+    <option *ngFor="let option of options" [value]="option.value">
+      {{ option.label }}
+    </option>
+  </select>
+  <label *ngIf="error" class="label">
+    <span class="label-text-alt text-red-500">{{ error }}</span>
+  </label>
+</div>
+

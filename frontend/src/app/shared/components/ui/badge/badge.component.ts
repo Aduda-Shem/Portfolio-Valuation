@@ -10,11 +10,7 @@ import { STATUS_COLORS } from '../../../../core/utils/constants';
   selector: 'app-badge',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <span [class]="getBadgeClasses()">
-      {{ label }}
-    </span>
-  `,
+  templateUrl: './badge.component.html',
 })
 export class BadgeComponent {
   @Input() label: string = '';

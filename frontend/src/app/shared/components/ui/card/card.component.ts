@@ -9,13 +9,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-card',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div [class]="'card bg-white shadow-sm border border-gray-200 ' + (className || '')">
-      <div class="card-body">
-        <ng-content></ng-content>
-      </div>
-    </div>
-  `,
+  templateUrl: './card.component.html',
 })
 export class CardComponent {
   @Input() className?: string;
