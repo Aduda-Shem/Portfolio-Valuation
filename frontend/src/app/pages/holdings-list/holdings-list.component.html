@@ -1,0 +1,34 @@
+<app-page-header
+  title="Holdings"
+  description="View all holdings across all portfolios"
+></app-page-header>
+
+<app-loading-spinner *ngIf="loading$ | async" [fullHeight]="false" message="Loading holdings..."></app-loading-spinner>
+
+<div *ngIf="!(loading$ | async)">
+  <app-error-alert [message]="error$ | async"></app-error-alert>
+
+  <app-empty-state
+    *ngIf="(holdings$ | async)?.length === 0"
+    message="No holdings found"
+  ></app-empty-state>
+
+  <app-holdings-table
+    *ngIf="(holdings$ | async)?.length! > 0"
+    [holdings]="(holdings$ | async) || []"
+    [showPortfolio]="true"
+    (onDelete)="handleDeleteClick($event)"
+  ></app-holdings-table>
+</div>
+
+<app-confirm-dialog
+  [isOpen]="deleteConfirm.isOpen"
+  title="Delete Holding"
+  message="Are you sure you want to delete this holding? This action cannot be undone."
+  confirmText="Delete"
+  cancelText="Cancel"
+  variant="danger"
+  (onConfirm)="handleDeleteConfirm()"
+  (onCancel)="handleDeleteCancel()"
+></app-confirm-dialog>
+

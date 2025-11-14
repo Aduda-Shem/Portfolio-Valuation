@@ -1,0 +1,55 @@
+<app-card>
+  <h2 class="text-xl font-bold text-gray-900 mb-6">
+    {{ holding ? 'Edit Holding' : 'Add New Holding' }}
+  </h2>
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()">
+    <div class="space-y-4">
+      <app-input
+        label="Asset Name"
+        type="text"
+        placeholder="e.g., Apple Inc."
+        formControlName="asset_name"
+        [required]="true"
+      ></app-input>
+      <app-select
+        label="Asset Type"
+        [options]="assetTypeOptions"
+        formControlName="asset_type"
+        [required]="true"
+      ></app-select>
+      <app-input
+        label="Quantity"
+        type="number"
+        [step]="0.00000001"
+        placeholder="0.00000000"
+        formControlName="quantity"
+        [required]="true"
+        [min]="0"
+      ></app-input>
+      <app-input
+        label="Unit Price"
+        type="number"
+        [step]="0.0001"
+        placeholder="0.0000"
+        formControlName="unit_price"
+        [required]="true"
+        [min]="0"
+      ></app-input>
+      <app-input
+        label="Valuation Date"
+        type="date"
+        formControlName="valuation_date"
+        [required]="true"
+      ></app-input>
+      <div class="flex justify-end gap-2 pt-4">
+        <app-button type="button" variant="ghost" (onClick)="onCancel.emit()">
+          Cancel
+        </app-button>
+        <app-button type="submit" [disabled]="form.invalid">
+          {{ holding ? 'Update' : 'Add' }}
+        </app-button>
+      </div>
+    </div>
+  </form>
+</app-card>
+
