@@ -1,5 +1,3 @@
-<img width="1671" height="914" alt="Screenshot 2025-11-14 at 15 46 19" src="https://github.com/user-attachments/assets/005b9889-ca4b-43ae-b6a1-fba8d5de5a51" /># Portfolio Valuation System
-
 Django REST API and Angular frontend application for tracking portfolio values over time.
 
 ## Features
