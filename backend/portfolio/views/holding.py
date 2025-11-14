@@ -63,7 +63,6 @@ class HoldingGenericAPIView(generics.GenericAPIView):
         """
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            # Use serializer.save() to properly handle Decimal conversion
             holding = serializer.save()
             
             return Response(
@@ -91,7 +90,6 @@ class HoldingGenericAPIView(generics.GenericAPIView):
         holding = get_object_or_404(Holding, pk=holding_id)
         serializer = self.serializer_class(holding, data=request.data, partial=True)
         if serializer.is_valid():
-            # Use serializer.save() to properly handle Decimal conversion
             holding = serializer.save()
             
             return Response(

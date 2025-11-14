@@ -54,7 +54,7 @@ services:
     depends_on:
       - backend
     environment:
-      - VITE_API_URL=http://localhost:8000/api/v1
+      - NG_APP_API_URL=http://localhost:8000/api/v1
 
   pgadmin:
     container_name: portfolio_pgadmin
