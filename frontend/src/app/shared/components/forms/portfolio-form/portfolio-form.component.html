@@ -1,0 +1,45 @@
+<app-card>
+  <h2 class="text-xl font-bold text-gray-900 mb-6">
+    {{ portfolio ? 'Edit Portfolio' : 'Create New Portfolio' }}
+  </h2>
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()">
+    <div class="space-y-4">
+      <app-input
+        label="Portfolio Name"
+        type="text"
+        placeholder="Enter portfolio name"
+        formControlName="name"
+        [required]="true"
+      ></app-input>
+      <app-input
+        label="Client Name"
+        type="text"
+        placeholder="Enter client name"
+        formControlName="client_name"
+        [required]="true"
+      ></app-input>
+      <app-input
+        label="Client Email"
+        type="email"
+        placeholder="Enter client email"
+        formControlName="client_email"
+        [required]="true"
+      ></app-input>
+      <app-textarea
+        label="Description"
+        placeholder="Enter description (optional)"
+        formControlName="description"
+        [rows]="3"
+      ></app-textarea>
+      <div class="flex justify-end gap-2 pt-4">
+        <app-button type="button" variant="ghost" (onClick)="onCancel.emit()">
+          Cancel
+        </app-button>
+        <app-button type="submit" [disabled]="form.invalid">
+          {{ portfolio ? 'Update' : 'Create' }}
+        </app-button>
+      </div>
+    </div>
+  </form>
+</app-card>
+

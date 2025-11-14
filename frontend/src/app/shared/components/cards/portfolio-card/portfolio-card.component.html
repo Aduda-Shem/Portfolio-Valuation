@@ -1,0 +1,37 @@
+<app-card>
+  <div class="flex items-start gap-4">
+    <div class="w-12 h-12 rounded-lg bg-[#003781] flex items-center justify-center flex-shrink-0">
+      <span class="text-white text-xl font-bold">{{ portfolio.name.charAt(0) }}</span>
+    </div>
+    <div class="flex-1 min-w-0">
+      <h3 class="text-lg font-bold text-gray-900 mb-1 truncate">
+        <a [routerLink]="['/portfolios', portfolio.id]" class="hover:text-[#003781]">
+          {{ portfolio.name }}
+        </a>
+      </h3>
+      <p class="text-sm text-gray-600 mb-1 font-medium">{{ portfolio.client_name }}</p>
+      <p class="text-xs text-gray-500 mb-2">{{ portfolio.client_email }}</p>
+      <p *ngIf="portfolio.description" class="text-sm text-gray-600 line-clamp-2">
+        {{ portfolio.description }}
+      </p>
+      <div class="mt-3 flex items-center justify-between">
+        <span class="text-xs text-gray-500">
+          Created {{ Formatters.formatDate(portfolio.created_at, 'MMM dd, yyyy') }}
+        </span>
+        <div class="flex gap-2">
+          <app-button size="sm" [routerLink]="['/portfolios', portfolio.id]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            View
+          </app-button>
+          <app-button variant="danger" size="sm" (onClick)="onDelete.emit(portfolio.id)">
+            Delete
+          </app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-card>
+
