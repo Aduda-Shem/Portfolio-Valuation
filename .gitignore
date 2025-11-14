@@ -27,51 +27,126 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 /media
-/staticfiles
-/static
+staticfiles/
+static/
+*.pot
+*.pyc
+*.pyo
 
-# Environment
+# Environment variables
 .env
+.env.local
+.env.*.local
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+*.env
 
-# IDE
+# IDE - VSCode
 .vscode/
+*.code-workspace
+
+# IDE - PyCharm/IntelliJ
 .idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - Other
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
 
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
 # Testing
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
 .tox/
 .hypothesis/
+*.cover
+.cache
+nosetests.xml
+coverage.xml
 
-# Node
+# Node.js / npm
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+lerna-debug.log*
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
 
-# Frontend
-frontend/build/
+# Angular
 frontend/dist/
-frontend/.next/
-frontend/out/
+frontend/.angular/
+frontend/.sass-cache/
+frontend/connect.lock
+frontend/coverage/
+frontend/libpeerconnection.log
+frontend/testem.log
+frontend/typings/
+frontend/*.tsbuildinfo
+frontend/.vscode/
+frontend/.idea/
+
+# TypeScript
+*.tsbuildinfo
+
+# Build outputs
+*.map
+*.js.map
+*.css.map
 
 # Docker
 *.pid
 *.seed
 *.pid.lock
+.dockerignore
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
 

@@ -1,0 +1,27 @@
+<app-page-header
+  title="Valuations"
+  description="View all valuation snapshots across all portfolios"
+  [action]="true"
+>
+  <app-status-filter slot="action" [value]="statusFilter" (valueChange)="onStatusFilterChange($event)"></app-status-filter>
+</app-page-header>
+
+<app-loading-spinner *ngIf="loading$ | async" [fullHeight]="false" message="Loading valuations..."></app-loading-spinner>
+
+<div *ngIf="!(loading$ | async)">
+  <app-error-alert [message]="error$ | async"></app-error-alert>
+
+  <app-empty-state
+    *ngIf="(valuations$ | async)?.length === 0"
+    message="No valuation snapshots found"
+  ></app-empty-state>
+
+  <app-valuations-table
+    *ngIf="(valuations$ | async)?.length! > 0"
+    [valuations]="(valuations$ | async) || []"
+    [showPortfolio]="true"
+    (onRecalculate)="handleRecalculate($event)"
+    (onUpdateStatus)="handleUpdateStatus($event)"
+  ></app-valuations-table>
+</div>
+
