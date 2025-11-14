@@ -11,6 +11,8 @@ Django REST API and Angular frontend application for tracking portfolio values o
 - **Status Workflow**: Support for DRAFT → CONFIRMED → ARCHIVED status transitions
 - **RESTful API**: Complete REST API with filtering and querying capabilities
 - **Modern Frontend**: Angular application with Akita state management and DaisyUI
+Screenshot 2025-11-14 at 15.43.56.png
+Screenshot 2025-11-14 at 15.45.17.png
 
 ## Tech Stack
 
@@ -29,6 +31,7 @@ Django REST API and Angular frontend application for tracking portfolio values o
 ### Infrastructure
 - Docker & Docker Compose
 - PostgreSQL database
+Screenshot 2025-11-14 at 15.46.19.png
 
 ## Setup Instructions
 
