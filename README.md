@@ -57,6 +57,7 @@ Django REST API and Angular frontend application for tracking portfolio values o
    - ReDoc: http://localhost:8000/redoc/
    - Django Admin: http://localhost:8000/admin/
    - PgAdmin: http://localhost:5050 (admin@portfolio.com / admin123)
+<img width="1546" height="826" alt="Screenshot 2025-11-14 at 22 24 22" src="https://github.com/user-attachments/assets/805dce74-cbff-47fd-b64f-c57fc1c4e8fb" />
 
 ### Manual Setup (Without Docker)
 
