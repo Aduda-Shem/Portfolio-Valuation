@@ -3,10 +3,14 @@ Tests for Portfolio models.
 """
 import pytest
 from decimal import Decimal
-from datetime import date, timedelta
-from django.core.exceptions import ValidationError
+from datetime import date
 
 from portfolio.models import Portfolio, Holding, ValuationSnapshot
+from portfolio.tests.factories import (
+    PortfolioFactory,
+    HoldingFactory,
+    ValuationSnapshotFactory,
+)
 
 
 @pytest.mark.django_db
@@ -15,7 +19,7 @@ class TestPortfolio:
 
     def test_create_portfolio(self):
         """Test creating a portfolio."""
-        portfolio = Portfolio.objects.create(
+        portfolio = PortfolioFactory(
             name="Test Portfolio",
             client_name="John Doe",
             client_email="john@example.com",
@@ -28,7 +32,7 @@ class TestPortfolio:
 
     def test_portfolio_str(self):
         """Test portfolio string representation."""
-        portfolio = Portfolio.objects.create(
+        portfolio = PortfolioFactory(
             name="My Portfolio",
             client_name="Jane Smith",
             client_email="jane@example.com",
@@ -42,12 +46,8 @@ class TestHolding:
 
     def test_create_holding(self):
         """Test creating a holding."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        holding = Holding.objects.create(
+        portfolio = PortfolioFactory()
+        holding = HoldingFactory(
             portfolio=portfolio,
             asset_name="Apple Inc.",
             asset_type="STOCK",
@@ -61,12 +61,8 @@ class TestHolding:
 
     def test_holding_total_value_calculation(self):
         """Test holding total value calculation."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        holding = Holding.objects.create(
+        portfolio = PortfolioFactory()
+        holding = HoldingFactory(
             portfolio=portfolio,
             asset_name="Tesla Inc.",
             asset_type="STOCK",
@@ -79,12 +75,8 @@ class TestHolding:
 
     def test_holding_str(self):
         """Test holding string representation."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        holding = Holding.objects.create(
+        portfolio = PortfolioFactory()
+        holding = HoldingFactory(
             portfolio=portfolio,
             asset_name="Microsoft Corp.",
             asset_type="STOCK",
@@ -102,12 +94,8 @@ class TestValuationSnapshot:
 
     def test_create_valuation_snapshot(self):
         """Test creating a valuation snapshot."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        snapshot = ValuationSnapshot.objects.create(
+        portfolio = PortfolioFactory()
+        snapshot = ValuationSnapshotFactory(
             portfolio=portfolio,
             snapshot_date=date.today(),
             status="DRAFT",
@@ -119,12 +107,8 @@ class TestValuationSnapshot:
 
     def test_snapshot_str(self):
         """Test snapshot string representation."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        snapshot = ValuationSnapshot.objects.create(
+        portfolio = PortfolioFactory(name="Test Portfolio")
+        snapshot = ValuationSnapshotFactory(
             portfolio=portfolio,
             snapshot_date=date.today(),
             status="CONFIRMED",
@@ -134,19 +118,15 @@ class TestValuationSnapshot:
 
     def test_snapshot_unique_constraint(self):
         """Test that portfolio and snapshot_date combination is unique."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        ValuationSnapshot.objects.create(
+        portfolio = PortfolioFactory()
+        ValuationSnapshotFactory(
             portfolio=portfolio,
             snapshot_date=date.today(),
             status="DRAFT",
         )
         # Attempting to create another snapshot with same portfolio and date should fail
         with pytest.raises(Exception):  # IntegrityError
-            ValuationSnapshot.objects.create(
+            ValuationSnapshotFactory(
                 portfolio=portfolio,
                 snapshot_date=date.today(),
                 status="CONFIRMED",

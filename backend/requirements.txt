@@ -13,4 +13,5 @@ django-stubs==4.2.7
 django-extensions==3.2.3
 setuptools>=65.5.0
 drf-yasg==1.21.7
+factory-boy==3.3.0
 

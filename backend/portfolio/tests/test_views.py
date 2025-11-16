@@ -8,6 +8,11 @@ from datetime import date, timedelta
 from django.urls import reverse
 
 from portfolio.models import Portfolio, Holding, ValuationSnapshot
+from portfolio.tests.factories import (
+    PortfolioFactory,
+    HoldingFactory,
+    ValuationSnapshotFactory,
+)
 
 
 @pytest.mark.django_db
@@ -16,16 +21,8 @@ class TestPortfolioGenericAPIView:
 
     def test_list_portfolios(self, api_client):
         """Test listing portfolios."""
-        Portfolio.objects.create(
-            name="Portfolio 1",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        Portfolio.objects.create(
-            name="Portfolio 2",
-            client_name="Jane Smith",
-            client_email="jane@example.com",
-        )
+        PortfolioFactory()
+        PortfolioFactory()
         url = reverse("portfolio-list")
         response = api_client.get(url)
         assert response.status_code == 200
@@ -50,31 +47,19 @@ class TestPortfolioGenericAPIView:
 
     def test_search_portfolios(self, api_client):
         """Test searching portfolios."""
-        Portfolio.objects.create(
-            name="Tech Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        Portfolio.objects.create(
-            name="Finance Portfolio",
-            client_name="Jane Smith",
-            client_email="jane@example.com",
-        )
+        tech_portfolio = PortfolioFactory(name="Tech Portfolio")
+        PortfolioFactory(name="Finance Portfolio")
         url = reverse("portfolio-list")
         response = api_client.get(url, {"search": "Tech"})
         assert response.status_code == 200
         assert len(response.data["portfolios"]) == 1
-        assert response.data["portfolios"][0]["name"] == "Tech Portfolio"
+        assert response.data["portfolios"][0]["name"] == tech_portfolio.name
 
     def test_pagination(self, api_client):
         """Test pagination."""
         # Create 30 portfolios
-        for i in range(30):
-            Portfolio.objects.create(
-                name=f"Portfolio {i}",
-                client_name=f"Client {i}",
-                client_email=f"client{i}@example.com",
-            )
+        for _ in range(30):
+            PortfolioFactory()
         url = reverse("portfolio-list")
         response = api_client.get(url, {"page": 1, "rows": 10})
         assert response.status_code == 200
@@ -89,56 +74,41 @@ class TestPortfolioDetailGenericAPIView:
 
     def test_retrieve_portfolio(self, api_client):
         """Test retrieving a portfolio."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
+        portfolio = PortfolioFactory()
         url = reverse("portfolio-detail")
         response = api_client.get(url, {"id": portfolio.id})
         assert response.status_code == 200
         assert response.data["message"] == "Portfolio fetched successfully"
-        assert response.data["portfolio"]["name"] == "Test Portfolio"
+        assert response.data["portfolio"]["name"] == portfolio.name
 
     def test_update_portfolio(self, api_client):
         """Test updating a portfolio."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
+        portfolio = PortfolioFactory()
+        new_name = "Updated Portfolio"
         url = reverse("portfolio-detail")
         data = {
             "id": portfolio.id,
-            "name": "Updated Portfolio",
-            "client_name": "John Doe",
-            "client_email": "john@example.com",
+            "name": new_name,
+            "client_name": portfolio.client_name,
+            "client_email": portfolio.client_email,
         }
         response = api_client.put(url, data, format="json")
         assert response.status_code == 200
         assert response.data["message"] == "Portfolio updated successfully"
-        assert response.data["portfolio"]["name"] == "Updated Portfolio"
+        assert response.data["portfolio"]["name"] == new_name
 
     def test_delete_portfolio(self, api_client):
         """Test deleting a portfolio."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
+        portfolio = PortfolioFactory()
         url = reverse("portfolio-detail")
-        response = api_client.delete(url, {"id": portfolio.id})
+        response = api_client.delete(f"{url}?id={portfolio.id}")
         assert response.status_code == 200
         assert response.data["message"] == "Portfolio deleted successfully"
         assert not Portfolio.objects.filter(pk=portfolio.id).exists()
 
     def test_portfolio_statistics(self, api_client):
         """Test portfolio statistics endpoint."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
+        portfolio = PortfolioFactory()
         url = reverse("portfolio-statistics")
         response = api_client.get(url, {"id": portfolio.id})
         assert response.status_code == 200
@@ -152,108 +122,64 @@ class TestHoldingGenericAPIView:
 
     def test_create_holding(self, api_client):
         """Test creating a holding."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
+        portfolio = PortfolioFactory()
+        quantity = Decimal("100.0")
+        unit_price = Decimal("150.50")
+        valuation_date = date.today()
         url = reverse("holding-list")
         data = {
             "portfolio": portfolio.id,
-            "asset_name": "Apple Inc.",
+            "asset_name": "Test Asset",
             "asset_type": "STOCK",
-            "quantity": "100.0",
-            "unit_price": "150.50",
-            "valuation_date": str(date.today()),
+            "quantity": str(quantity),
+            "unit_price": str(unit_price),
+            "valuation_date": str(valuation_date),
         }
         response = api_client.post(url, data, format="json")
         assert response.status_code == 201
         assert response.data["message"] == "Holding created successfully"
-        assert response.data["holding"]["asset_name"] == "Apple Inc."
-        assert response.data["holding"]["total_value"] == "15050.00"
+        assert response.data["holding"]["asset_name"] == "Test Asset"
+        assert Decimal(response.data["holding"]["total_value"]) == quantity * unit_price
 
     def test_list_holdings_filtered_by_portfolio(self, api_client):
         """Test listing holdings filtered by portfolio."""
-        portfolio1 = Portfolio.objects.create(
-            name="Portfolio 1",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        portfolio2 = Portfolio.objects.create(
-            name="Portfolio 2",
-            client_name="Jane Smith",
-            client_email="jane@example.com",
-        )
-        Holding.objects.create(
-            portfolio=portfolio1,
-            asset_name="Apple Inc.",
-            asset_type="STOCK",
-            quantity=Decimal("100"),
-            unit_price=Decimal("150.50"),
-            valuation_date=date.today(),
-        )
-        Holding.objects.create(
-            portfolio=portfolio2,
-            asset_name="Tesla Inc.",
-            asset_type="STOCK",
-            quantity=Decimal("50"),
-            unit_price=Decimal("200.75"),
-            valuation_date=date.today(),
-        )
+        portfolio1 = PortfolioFactory()
+        portfolio2 = PortfolioFactory()
+        holding1 = HoldingFactory(portfolio=portfolio1, valuation_date=date.today())
+        HoldingFactory(portfolio=portfolio2, valuation_date=date.today())
         url = reverse("holding-list")
         response = api_client.get(url, {"portfolio": portfolio1.id})
         assert response.status_code == 200
         assert response.data["message"] == "Holdings fetched successfully"
         assert len(response.data["holdings"]) == 1
-        assert response.data["holdings"][0]["asset_name"] == "Apple Inc."
+        assert response.data["holdings"][0]["asset_name"] == holding1.asset_name
 
     def test_update_holding(self, api_client):
         """Test updating a holding."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        holding = Holding.objects.create(
-            portfolio=portfolio,
-            asset_name="Apple Inc.",
-            asset_type="STOCK",
-            quantity=Decimal("100"),
-            unit_price=Decimal("150.50"),
-            valuation_date=date.today(),
-        )
+        portfolio = PortfolioFactory()
+        holding = HoldingFactory(portfolio=portfolio, valuation_date=date.today())
+        new_asset_name = "Updated Asset Name"
         url = reverse("holding-list")
         data = {
             "id": holding.id,
             "portfolio": portfolio.id,
-            "asset_name": "Apple Inc. Updated",
-            "asset_type": "STOCK",
-            "quantity": "100.0",
-            "unit_price": "150.50",
-            "valuation_date": str(date.today()),
+            "asset_name": new_asset_name,
+            "asset_type": holding.asset_type,
+            "quantity": str(holding.quantity),
+            "unit_price": str(holding.unit_price),
+            "valuation_date": str(holding.valuation_date),
         }
         response = api_client.put(url, data, format="json")
         assert response.status_code == 200
         assert response.data["message"] == "Holding updated successfully"
-        assert response.data["holding"]["asset_name"] == "Apple Inc. Updated"
+        assert response.data["holding"]["asset_name"] == new_asset_name
 
     def test_delete_holding(self, api_client):
         """Test deleting a holding."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        holding = Holding.objects.create(
-            portfolio=portfolio,
-            asset_name="Apple Inc.",
-            asset_type="STOCK",
-            quantity=Decimal("100"),
-            unit_price=Decimal("150.50"),
-            valuation_date=date.today(),
-        )
+        portfolio = PortfolioFactory()
+        holding = HoldingFactory(portfolio=portfolio, valuation_date=date.today())
         url = reverse("holding-list")
-        response = api_client.delete(url, {"id": holding.id})
+        response = api_client.delete(f"{url}?id={holding.id}")
         assert response.status_code == 200
         assert response.data["message"] == "Holding deleted successfully"
         assert not Holding.objects.filter(pk=holding.id).exists()
@@ -265,44 +191,37 @@ class TestValuationSnapshotGenericAPIView:
 
     def test_create_valuation_snapshot(self, api_client):
         """Test creating a valuation snapshot."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        Holding.objects.create(
+        portfolio = PortfolioFactory()
+        quantity = Decimal("100")
+        unit_price = Decimal("150.50")
+        valuation_date = date.today()
+        HoldingFactory(
             portfolio=portfolio,
-            asset_name="Apple Inc.",
-            asset_type="STOCK",
-            quantity=Decimal("100"),
-            unit_price=Decimal("150.50"),
-            valuation_date=date.today(),
+            quantity=quantity,
+            unit_price=unit_price,
+            valuation_date=valuation_date,
         )
         url = reverse("valuation-list")
         data = {
             "portfolio": portfolio.id,
-            "snapshot_date": str(date.today()),
+            "snapshot_date": str(valuation_date),
             "status": "DRAFT",
         }
         response = api_client.post(url, data, format="json")
         assert response.status_code == 201
         assert response.data["message"] == "Valuation snapshot created successfully"
-        assert response.data["valuation"]["total_aum"] == "15050.00"
+        assert Decimal(response.data["valuation"]["total_aum"]) == quantity * unit_price
 
     def test_list_valuations_filtered_by_status(self, api_client):
         """Test listing valuations filtered by status."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        ValuationSnapshot.objects.create(
+        portfolio = PortfolioFactory()
+        ValuationSnapshotFactory(
             portfolio=portfolio,
             snapshot_date=date.today(),
             status="DRAFT",
             total_aum=Decimal("10000.00"),
         )
-        ValuationSnapshot.objects.create(
+        ValuationSnapshotFactory(
             portfolio=portfolio,
             snapshot_date=date.today() - timedelta(days=1),
             status="CONFIRMED",
@@ -317,39 +236,32 @@ class TestValuationSnapshotGenericAPIView:
 
     def test_recalculate_snapshot(self, api_client):
         """Test recalculating snapshot AUM."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        snapshot = ValuationSnapshot.objects.create(
+        portfolio = PortfolioFactory()
+        quantity = Decimal("100")
+        unit_price = Decimal("150.50")
+        valuation_date = date.today()
+        snapshot = ValuationSnapshotFactory(
             portfolio=portfolio,
-            snapshot_date=date.today(),
+            snapshot_date=valuation_date,
             status="DRAFT",
             total_aum=Decimal("0.00"),
         )
-        Holding.objects.create(
+        HoldingFactory(
             portfolio=portfolio,
-            asset_name="Apple Inc.",
-            asset_type="STOCK",
-            quantity=Decimal("100"),
-            unit_price=Decimal("150.50"),
-            valuation_date=date.today(),
+            quantity=quantity,
+            unit_price=unit_price,
+            valuation_date=valuation_date,
         )
         url = reverse("valuation-recalculate")
         response = api_client.post(url, {"id": snapshot.id})
         assert response.status_code == 200
         assert response.data["message"] == "Valuation AUM recalculated successfully"
-        assert response.data["valuation"]["total_aum"] == "15050.00"
+        assert Decimal(response.data["valuation"]["total_aum"]) == quantity * unit_price
 
     def test_update_snapshot_status(self, api_client):
         """Test updating snapshot status."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        snapshot = ValuationSnapshot.objects.create(
+        portfolio = PortfolioFactory()
+        snapshot = ValuationSnapshotFactory(
             portfolio=portfolio,
             snapshot_date=date.today(),
             status="DRAFT",
@@ -362,12 +274,8 @@ class TestValuationSnapshotGenericAPIView:
 
     def test_update_valuation(self, api_client):
         """Test updating a valuation snapshot."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        snapshot = ValuationSnapshot.objects.create(
+        portfolio = PortfolioFactory()
+        snapshot = ValuationSnapshotFactory(
             portfolio=portfolio,
             snapshot_date=date.today(),
             status="DRAFT",
@@ -388,27 +296,14 @@ class TestValuationSnapshotGenericAPIView:
 
     def test_delete_valuation(self, api_client):
         """Test deleting a valuation snapshot."""
-        portfolio = Portfolio.objects.create(
-            name="Test Portfolio",
-            client_name="John Doe",
-            client_email="john@example.com",
-        )
-        snapshot = ValuationSnapshot.objects.create(
+        portfolio = PortfolioFactory()
+        snapshot = ValuationSnapshotFactory(
             portfolio=portfolio,
             snapshot_date=date.today(),
             status="DRAFT",
         )
         url = reverse("valuation-list")
-        response = api_client.delete(url, {"id": snapshot.id})
+        response = api_client.delete(f"{url}?id={snapshot.id}")
         assert response.status_code == 200
         assert response.data["message"] == "Valuation snapshot deleted successfully"
         assert not ValuationSnapshot.objects.filter(pk=snapshot.id).exists()
-
-
-@pytest.fixture
-def api_client():
-    """Fixture for API client."""
-    from rest_framework.test import APIClient
-
-    client = APIClient()
-    return client
