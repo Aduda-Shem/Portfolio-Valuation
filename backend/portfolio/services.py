@@ -16,13 +16,6 @@ class ValuationService:
     def calculate_portfolio_aum(portfolio: Portfolio, valuation_date: date) -> Decimal:
         """
         Calculate total Assets Under Management (AUM) for a portfolio on a specific date.
-
-        Args:
-            portfolio: The portfolio to calculate AUM for
-            valuation_date: The date to calculate AUM for
-
-        Returns:
-            Total AUM as a Decimal (sum of quantity * unit_price for all holdings on that date)
         """
         holdings = Holding.objects.filter(
             portfolio=portfolio,
@@ -46,16 +39,6 @@ class ValuationService:
     ) -> ValuationSnapshot:
         """
         Create a valuation snapshot for a portfolio on a specific date.
-
-        Args:
-            portfolio: The portfolio to create a snapshot for
-            snapshot_date: The date of the snapshot
-            status: Status of the snapshot (default: DRAFT)
-            notes: Optional notes about the snapshot
-            recalculate: Whether to recalculate AUM (default: True)
-
-        Returns:
-            The created ValuationSnapshot instance
         """
         if status not in [choice[0] for choice in ValuationSnapshot.STATUS_CHOICES]:
             raise ValueError(f"Invalid status: {status}")
@@ -80,9 +63,6 @@ class ValuationService:
     def recalculate_snapshot_aum(snapshot: ValuationSnapshot) -> ValuationSnapshot:
         """
         Recalculate and update the AUM for an existing snapshot.
-
-        Args:
-            snapshot: The snapshot to recalculate
         """
         total_aum = ValuationService.calculate_portfolio_aum(snapshot.portfolio, snapshot.snapshot_date)
         snapshot.total_aum = total_aum
@@ -119,16 +99,6 @@ class ValuationService:
     def update_snapshot_status(snapshot: ValuationSnapshot, new_status: str) -> ValuationSnapshot:
         """
         Update the status of a valuation snapshot.
-
-        Args:
-            snapshot: The snapshot to update
-            new_status: The new status (DRAFT, CONFIRMED, ARCHIVED)
-
-        Returns:
-            The updated ValuationSnapshot instance
-
-        Raises:
-            ValueError: If new_status is not valid
         """
         valid_statuses = [choice[0] for choice in ValuationSnapshot.STATUS_CHOICES]
         if new_status not in valid_statuses:
@@ -148,12 +118,6 @@ class PortfolioService:
     def get_portfolio_statistics(portfolio: Portfolio) -> Dict[str, Any]:
         """
         Get statistics for a portfolio.
-
-        Args:
-            portfolio: The portfolio to get statistics for
-
-        Returns:
-            Dictionary containing portfolio statistics
         """
         total_holdings = portfolio.holdings.count()
         total_snapshots = portfolio.valuation_snapshots.count()

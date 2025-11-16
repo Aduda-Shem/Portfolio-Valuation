@@ -20,11 +20,15 @@ from portfolio.models.portfolio import Portfolio
 from datetime import date
 
 class ValuationSnapshotGenericAPIView(generics.GenericAPIView):
-    """Generic API View for Valuation Snapshot management."""
+    """
+        View for Valuation Snapshot management.
+    """
     serializer_class = ValuationSnapshotSerializer
 
     def get(self, request: Request) -> Response:
-        """Get list of valuation snapshots with optional filtering and pagination."""
+        """
+            list of valuation snapshots with filtering and pagination.
+        """
         portfolio_id = request.query_params.get("portfolio")
         status_filter = request.query_params.get("status")
         snapshot_date = request.query_params.get("snapshot_date")
@@ -65,12 +69,11 @@ class ValuationSnapshotGenericAPIView(generics.GenericAPIView):
 
 
     def post(self, request: Request) -> Response:
-        """Create a new valuation snapshot (automatically calculates AUM)."""
+        """
+            create a new valuation snapshot (automatically calculates AUM).
+        """
         serializer = ValuationSnapshotCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            # Create valuation snapshot instance and set fields one by one
-
-            
+        if serializer.is_valid():            
             portfolio_id = request.data.get("portfolio")
             portfolio = get_object_or_404(Portfolio, pk=portfolio_id)
             snapshot_date_str = request.data.get("snapshot_date")
@@ -111,13 +114,11 @@ class ValuationSnapshotGenericAPIView(generics.GenericAPIView):
 
 
     def put(self, request: Request) -> Response:
-        """Update a valuation snapshot."""
+        """
+            update a valuation snapshot.
+        """
         snapshot_id = request.data.get("id") or request.query_params.get("id")
-        if not snapshot_id:
-            return Response(
-                {"message": "Valuation snapshot ID is required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+
 
         snapshot = get_object_or_404(ValuationSnapshot, pk=snapshot_id)
         serializer = self.serializer_class(snapshot, data=request.data, partial=True)
@@ -152,13 +153,10 @@ class ValuationSnapshotGenericAPIView(generics.GenericAPIView):
         )
 
     def delete(self, request: Request) -> Response:
-        """Delete a valuation snapshot."""
+        """
+            Delete a valuation snapshot.
+        """
         snapshot_id = request.query_params.get("id")
-        if not snapshot_id:
-            return Response(
-                {"message": "Valuation snapshot ID is required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
 
         snapshot = get_object_or_404(ValuationSnapshot, pk=snapshot_id)
         snapshot.delete()
@@ -169,11 +167,15 @@ class ValuationSnapshotGenericAPIView(generics.GenericAPIView):
 
 
 class ValuationRecalculateGenericAPIView(generics.GenericAPIView):
-    """Generic API View for recalculating valuation AUM."""
+    """
+        View for recalculating valuation AUM.
+    """
     serializer_class = ValuationSnapshotSerializer
 
     def post(self, request: Request) -> Response:
-        """Recalculate AUM for a valuation snapshot."""
+        """
+            recalculate AUM for a valuation snapshot.
+        """
         snapshot_id = request.query_params.get("id") or request.data.get("id")
         if not snapshot_id:
             return Response(
@@ -193,11 +195,15 @@ class ValuationRecalculateGenericAPIView(generics.GenericAPIView):
 
 
 class ValuationUpdateStatusGenericAPIView(generics.GenericAPIView):
-    """Generic API View for updating valuation snapshot status."""
+    """
+        View for updating valuation snapshot status.
+    """
     serializer_class = ValuationSnapshotSerializer
 
     def patch(self, request: Request) -> Response:
-        """Update the status of a valuation snapshot."""
+        """
+            update the status of a valuation snapshot.
+        """
         snapshot_id = request.query_params.get("id") or request.data.get("id")
         new_status = request.data.get("status") or request.query_params.get("status")
 

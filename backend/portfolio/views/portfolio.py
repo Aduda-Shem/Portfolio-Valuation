@@ -16,11 +16,15 @@ from portfolio.services import PortfolioService
 
 
 class PortfolioGenericAPIView(generics.GenericAPIView):
-    """Generic API View for Portfolio management."""
+    """
+        View for Portfolio management.
+    """
     serializer_class = PortfolioSerializer
 
     def get(self, request: Request) -> Response:
-        """Get list of portfolios with optional search and pagination."""
+        """
+            list of portfolios with search and pagination.
+        """
         search = request.query_params.get("search")
         page = int(request.query_params.get("page", 1))
         rows = int(request.query_params.get("rows", 25))
@@ -55,10 +59,11 @@ class PortfolioGenericAPIView(generics.GenericAPIView):
 
 
     def post(self, request: Request) -> Response:
-        """Create a new portfolio."""
+        """
+            create a new portfolio.
+        """
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            # Create portfolio instance and set fields one by one
             portfolio = Portfolio()
             portfolio.name = request.data.get("name")
             portfolio.client_name = request.data.get("client_name")
@@ -80,18 +85,17 @@ class PortfolioGenericAPIView(generics.GenericAPIView):
 
 
 class PortfolioDetailGenericAPIView(generics.GenericAPIView):
-    """Generic API View for Portfolio detail operations."""
+    """
+        View for Portfolio detail operations.
+    """
     serializer_class = PortfolioDetailSerializer
 
     def get(self, request: Request) -> Response:
-        """Get portfolio details with holdings and valuations."""
+        """
+            get portfolio details with holdings and valuations.
+        """
         portfolio_id = request.query_params.get("id")
-        if not portfolio_id:
-            return Response(
-                {"message": "Portfolio ID is required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+   
         portfolio = get_object_or_404(Portfolio, pk=portfolio_id)
         return Response(
             {
@@ -102,13 +106,11 @@ class PortfolioDetailGenericAPIView(generics.GenericAPIView):
         )
 
     def put(self, request: Request) -> Response:
-        """Update a portfolio."""
+        """
+            update a portfolio.
+        """
         portfolio_id = request.data.get("id") or request.query_params.get("id")
-        if not portfolio_id:
-            return Response(
-                {"message": "Portfolio ID is required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+       
 
         portfolio = get_object_or_404(Portfolio, pk=portfolio_id)
         serializer = PortfolioSerializer(portfolio, data=request.data, partial=True)
@@ -137,14 +139,11 @@ class PortfolioDetailGenericAPIView(generics.GenericAPIView):
         )
 
     def delete(self, request: Request) -> Response:
-        """Delete a portfolio."""
+        """
+            delete a portfolio.
+        """
         portfolio_id = request.query_params.get("id")
-        if not portfolio_id:
-            return Response(
-                {"message": "Portfolio ID is required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+     
         portfolio = get_object_or_404(Portfolio, pk=portfolio_id)
         portfolio.delete()
         return Response(
@@ -157,14 +156,11 @@ class PortfolioStatisticsGenericAPIView(generics.GenericAPIView):
     """Generic API View for Portfolio statistics."""
 
     def get(self, request: Request) -> Response:
-        """Get statistics for a portfolio."""
+        """
+            get statistics for a portfolio.
+        """
         portfolio_id = request.query_params.get("id")
-        if not portfolio_id:
-            return Response(
-                {"message": "Portfolio ID is required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+ 
         portfolio = get_object_or_404(Portfolio, pk=portfolio_id)
         stats = PortfolioService.get_portfolio_statistics(portfolio)
         return Response(

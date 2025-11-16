@@ -39,7 +39,6 @@ class ValuationSnapshotSerializer(serializers.ModelSerializer):
 
 class ValuationSnapshotCreateSerializer(serializers.ModelSerializer):
     """
-    Serializer for creating valuation snapshots.
     calculates AUM when creating a snapshot.
     """
 
