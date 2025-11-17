@@ -78,7 +78,7 @@ Django REST API and Angular frontend application for tracking portfolio values o
 3. **Set up environment variables**
    Create a `.env` file in the backend directory:
    ```env
-   SECRET_KEY=your-secret-key-here
+   SECRET_KEY=secret-key
    DEBUG=True
    POSTGRES_DB=portfolio_db
    POSTGRES_USER=postgres
