@@ -12,7 +12,6 @@ class Holding(models.Model):
     """
     model for an asset holding within a portfolio.
     """
-
     ASSET_TYPE_CHOICES = [
         ("STOCK", "Stock"),
         ("BOND", "Bond"),

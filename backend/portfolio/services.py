@@ -40,9 +40,6 @@ class ValuationService:
         """
         Create a valuation snapshot for a portfolio on a specific date.
         """
-        if status not in [choice[0] for choice in ValuationSnapshot.STATUS_CHOICES]:
-            raise ValueError(f"Invalid status: {status}")
-
         total_aum = None
         if recalculate:
             total_aum = ValuationService.calculate_portfolio_aum(portfolio, snapshot_date)
@@ -73,10 +70,6 @@ class ValuationService:
     def get_portfolio_holdings_by_date(portfolio: Portfolio, valuation_date: date) -> QuerySet[Holding]:
         """
         Get all holdings for a portfolio on a specific date.
-
-        Args:
-            portfolio: The portfolio to get holdings for
-            valuation_date: The date to filter holdings by
         """
         return Holding.objects.filter(portfolio=portfolio, valuation_date=valuation_date).select_related("portfolio")
 
@@ -84,12 +77,6 @@ class ValuationService:
     def get_portfolio_valuation_history(portfolio: Portfolio) -> QuerySet[ValuationSnapshot]:
         """
         Get all valuation snapshots for a portfolio, ordered by date.
-
-        Args:
-            portfolio: The portfolio to get history for
-
-        Returns:
-            QuerySet of ValuationSnapshot instances
         """
         return ValuationSnapshot.objects.filter(portfolio=portfolio).select_related("portfolio").order_by(
             "-snapshot_date"
@@ -100,10 +87,6 @@ class ValuationService:
         """
         Update the status of a valuation snapshot.
         """
-        valid_statuses = [choice[0] for choice in ValuationSnapshot.STATUS_CHOICES]
-        if new_status not in valid_statuses:
-            raise ValueError(f"Invalid status: {new_status}. Must be one of {valid_statuses}")
-
         snapshot.status = new_status
         snapshot.save(update_fields=["status", "updated_at"])
         return snapshot
